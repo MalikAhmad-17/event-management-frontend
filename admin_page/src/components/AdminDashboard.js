@@ -5,6 +5,7 @@ const AdminDashboard = () => {
   const [hoveredPoint, setHoveredPoint] = useState(null);
   const [hoveredBar, setHoveredBar] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [barMousePosition, setBarMousePosition] = useState({ x: 0, y: 0 });
   
   // Chart data
   const revenueData = [
@@ -16,9 +17,10 @@ const AdminDashboard = () => {
   ];
   
   const eventsData = [
-    { name: 'Tech Summit', participants: 850, height: 40 },
-    { name: 'Music Festival', participants: 4523, height: 180 },
-    { name: 'Yoga Retreat', participants: 1240, height: 80 }
+    { name: 'Tech Summit', participants: 850, height: 60, color: '#1e40af' },
+    { name: 'Music Festival', participants: 4523, height: 180, color: '#1e40af' },
+    { name: 'Marketing Class', participants: 1240, height: 80, color: '#1e40af' },
+    { name: 'Yoga Retreat', participants: 890, height: 50, color: '#1e40af' }
   ];
 
   return (
@@ -175,7 +177,7 @@ const AdminDashboard = () => {
                   />
                   
                   {/* Data points */}
-                  {revenueData.map((point, index) => (
+                  {revenueData.map((point) => (
                     <circle 
                       key={point.month}
                       cx={point.x} 
@@ -216,55 +218,69 @@ const AdminDashboard = () => {
           {/* Most Popular Events Chart */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="mb-6">
-              <h3 className="text-lg font-normal text-gray-900 mb-1">Most Popular Events</h3>
+              <h3 className="text-lg font-normal text-gray-900 mb-2">Most Popular Events</h3>
               <p className="text-gray-500 text-xs font-thin">Events by participant count</p>
             </div>
             <div className="h-64 relative">
               {/* Y-axis labels */}
-              <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-400">
+              <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-400 w-12">
                 <span>6000</span>
                 <span>4500</span>
                 <span>3000</span>
                 <span>1500</span>
                 <span>0</span>
               </div>
-              {/* Bar chart */}
+              
+              {/* Bar chart with cursor tracking */}
               <div 
-                className="ml-8 h-full flex items-end justify-center space-x-8 pb-8 relative"
+                className="absolute left-12 right-0 top-0 bottom-8 flex items-end justify-around gap-4"
                 onMouseMove={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
-                  setMousePosition({
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top
-                  });
+                  const mouseX = e.clientX - rect.left;
+                  const mouseY = e.clientY - rect.top;
+                  
+                  setBarMousePosition({ x: mouseX, y: mouseY });
+                  
+                  // Find which bar the mouse is over based on X position
+                  const barWidth = rect.width / eventsData.length;
+                  const barIndex = Math.floor(mouseX / barWidth);
+                  
+                  if (barIndex >= 0 && barIndex < eventsData.length) {
+                    setHoveredBar(eventsData[barIndex]);
+                  }
                 }}
+                onMouseEnter={() => {
+                  // Set initial bar when entering chart area
+                  if (!hoveredBar) {
+                    setHoveredBar(eventsData[0]);
+                  }
+                }}
+                onMouseLeave={() => setHoveredBar(null)}
               >
-                {eventsData.map((event, index) => (
+                {eventsData.map((event) => (
                   <div 
                     key={event.name}
-                    className="flex flex-col items-center cursor-pointer relative"
-                    onMouseEnter={() => setHoveredBar(event)}
-                    onMouseLeave={() => setHoveredBar(null)}
+                    className="flex flex-col items-center flex-1 relative"
                   >
                     <div 
-                      className={`w-16 rounded-t mb-2 transition-all duration-200 ${
-                        index === 0 ? 'bg-blue-200 hover:bg-blue-300' :
-                        index === 1 ? 'bg-blue-600 hover:bg-blue-700' :
-                        'bg-blue-400 hover:bg-blue-500'
-                      }`}
-                      style={{height: `${event.height}px`}}
-                    ></div>
-                    <span className="text-xs text-gray-600">{event.name}</span>
+                      className="w-full rounded-t transition-all duration-200 cursor-pointer relative"
+                      style={{ 
+                        height: `${event.height}px`, 
+                        backgroundColor: event.color,
+                        opacity: hoveredBar?.name === event.name ? 0.8 : 1,
+                        transform: hoveredBar?.name === event.name ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                    />
                   </div>
                 ))}
                 
-                {/* Mouse-tracking Bar Tooltip */}
+                {/* Continuous Mouse-tracking Tooltip for Bar Chart */}
                 {hoveredBar && (
                   <div 
-                    className="absolute bg-white border border-gray-200 rounded-lg shadow-lg p-3 pointer-events-none z-10 transition-all duration-100"
+                    className="absolute bg-white border border-gray-200 rounded-lg shadow-lg p-3 pointer-events-none z-10 transition-all duration-150"
                     style={{
-                      left: `${mousePosition.x}px`,
-                      top: `${mousePosition.y - 60}px`,
+                      left: `${barMousePosition.x}px`,
+                      top: `${barMousePosition.y - 60}px`,
                       transform: 'translate(-50%, 0)'
                     }}
                   >
@@ -273,10 +289,74 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
+              
+              {/* X-axis labels */}
+              <div className="absolute left-12 right-0 bottom-0 flex justify-around text-xs text-gray-500">
+                {eventsData.map((event) => (
+                  <span key={event.name} className="text-center flex-1 truncate px-1">
+                    {event.name}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Recent Activity Section */}
+      <div className="container mx-auto px-6 py-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h1 className="text-sm font-thin text-gray-900 mb-6">Recent Activity</h1>
+          
+          <div className="space-y-3">
+            {/* Activity Item 1 */}
+            <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
+              <div>
+                <div className="text-sm font-thin text-gray-900 mb-1">New organizer registered</div>
+                <div className="text-xs text-gray-500">John Smith</div>
+              </div>
+              <div className="text-xs text-gray-500">5 minutes ago</div>
+            </div>
+
+            {/* Activity Item 2 */}
+            <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
+              <div>
+                <div className="text-sm font-thin text-gray-900 mb-1">Event approved</div>
+                <div className="text-xs text-gray-500">Tech Innovation Summit</div>
+              </div>
+              <div className="text-xs text-gray-500">12 minutes ago</div>
+            </div>
+
+            {/* Activity Item 3 */}
+            <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
+              <div>
+                <div className="text-sm font-thin text-gray-900 mb-1">New user registered</div>
+                <div className="text-xs text-gray-500">Sarah Johnson</div>
+              </div>
+              <div className="text-xs text-gray-500">23 minutes ago</div>
+            </div>
+
+            {/* Activity Item 4 */}
+            <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
+              <div>
+                <div className="text-sm font-thin text-gray-900 mb-1">Event created</div>
+                <div className="text-xs text-gray-500">Marketing Masterclass</div>
+              </div>
+              <div className="text-xs text-gray-500">1 hour ago</div>
+            </div>
+
+            {/* Activity Item 5 */}
+            <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
+              <div>
+                <div className="text-sm font-thin text-gray-900 mb-1">Payment processed</div>
+                <div className="text-xs text-gray-500">$99.00</div>
+              </div>
+              <div className="text-xs text-gray-500">2 hours ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
