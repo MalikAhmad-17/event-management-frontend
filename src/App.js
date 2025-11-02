@@ -1,5 +1,5 @@
 import Navbar from './components/Navbar';
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './admin_page/AdminDashboard';
 
 function App() {
   return (
