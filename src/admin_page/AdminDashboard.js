@@ -104,7 +104,7 @@ const AdminDashboard = () => {
             </div>
             <div className="h-64 relative">
               {/* Chart container with grid lines */}
-              <div className="absolute inset-0 flex flex-col justify-between text-xs text-gray-400">
+              <div className="absolute inset-0 flex flex-col justify-between text-xs text-gray-500">
                 <div className="flex justify-between border-b border-gray-100 pb-1">
                   <span>26000</span>
                 </div>
@@ -223,7 +223,7 @@ const AdminDashboard = () => {
             </div>
             <div className="h-64 relative">
               {/* Y-axis labels */}
-              <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-400 w-12">
+              <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-500 w-12">
                 <span>6000</span>
                 <span>4500</span>
                 <span>3000</span>
