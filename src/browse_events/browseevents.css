@@ -1,0 +1,38 @@
+.browseevents{
+    width:100%;
+}
+.browsehead{
+    height:330px;
+    width: 100%;
+    background-color:rgba(15, 15, 156, 0.845);
+    align-content:end;
+    padding:50px;
+    color:white;
+}
+
+.browseevsection{
+    display:flex;
+    flex-wrap: wrap;
+    gap:20px;
+    padding:20px;
+
+}
+
+.leftsectionfilter{
+    width:25%;
+    height:100px;
+    /* padding:20px; */
+    /* display: flex-box; */
+}
+
+.rightsectionev{
+    width:100%;
+    flex:1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px,1fr));
+    overflow: hidden;
+}
+
+.browsecards{
+    width:320px;
+}

@@ -1,0 +1,186 @@
+
+/* body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin-bottom: 100px;
+  background-color: #120684ed;
+} */
+
+/* .logh2{
+  color:white;
+  margin-top: 80px;
+} */
+.loghead h2, .wel{
+  text-align: center;
+  color: black;
+  justify-content: center;
+  align-items: center;
+}
+.wel{
+  text-align: center;
+}
+.loginpage{
+  height:100vh;
+  /* background-color: #120684ed; */
+}
+
+.loginpage-container {
+  background-color: #120684ed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 60vw;
+  margin-top: 200px;
+}
+
+.form-toggle {
+  display: flex;
+  justify-content: space-between;
+  /* margin-bottom: 20px; */
+}
+
+.form-toggle button {
+  width: 50%;
+  padding: 10px;
+  background-color: #f3f3f3;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 10px 10px 0 0;
+}
+
+.form-toggle .active {
+  background-color: #30c951;
+  color: white;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form h2 {
+  margin-bottom: 20px;
+}
+
+.form input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.form button {
+  padding: 10px;
+  /* background-color:#39cf5e; */
+  /* color: white; */
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.switchbtn{
+  width: 100%;
+  padding: 10px ;
+  display: flex;
+  justify-content: space-between;
+  background-color: #f3f3f3;
+  cursor: pointer;
+  font-size: 16px;
+}
+label{
+      margin-top: 10px;
+}
+
+.switchbtn button{
+    width:33%;
+}
+
+.form a {
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.form p {
+  text-align: center;
+}
+
+
+.container3buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  width: 100vw;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.role-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.role-button.active {
+  background-color: green;
+  color: white;
+}
+
+.formask-container {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-btn{
+  width: 100px;
+  background-color: green; 
+  color:white;
+   cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.form-container label {
+  display: block;
+  margin-top: 10px;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+

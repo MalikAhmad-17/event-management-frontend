@@ -1,0 +1,52 @@
+.evheader1{
+    height:300px;
+    width:100%;
+    background-color: whitesmoke;
+    justify-items:center;
+    align-content:end;
+    padding:20px;
+    text-decoration: underline rgb(7, 221, 7);
+}
+
+.card2img {
+  width: 100%;
+  height: 200px;
+  object-fit:stretch;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.evdis1{
+    background-color:whitesmoke;
+    /* margin:30px; */
+    padding:40px;
+}
+
+.aboutevent1{
+    width: 70%;
+    height:max-content;
+    background-color: white;
+    border:1px solid grey;
+    padding:20px;
+    border-radius:10px;
+}
+
+.evdis1 h4{
+    margin-top:40px;
+}
+
+.evcard1{
+    height:fit-content;
+    width:80%;
+    background-color: white;
+    padding:20px; 
+    border-radius: 10px;
+    margin:20px;
+}
+
+.price1{
+    height: fit-content;
+    width: 70%;
+    background-color: white;
+    padding:20px;
+}
