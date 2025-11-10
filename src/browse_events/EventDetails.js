@@ -11,7 +11,7 @@ const EventDetails = () => {
     1: {
       title: 'Tech Innovation Summit 2025',
       category: 'Technology',
-      price: '$99',
+      price: '₹99',
       date: 'November 15, 2025 at 09:00 AM',
       location: 'San Francisco Convention Center, CA',
       organizer: 'Tech Events Inc.',
@@ -35,7 +35,7 @@ const EventDetails = () => {
     3: {
       title: 'Music Festival 2025',
       category: 'Music',
-      price: '$75',
+      price: '₹75',
       date: 'December 5, 2025 at 06:00 PM',
       location: 'Central Park, New York',
       organizer: 'NYC Music Events',
