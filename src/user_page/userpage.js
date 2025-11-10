@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { FiCalendar, FiMapPin, FiClock, FiUsers } from 'react-icons/fi';
+import { QRCodeSVG } from 'qrcode.react';
 
 const UserPage = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
 
   const upcomingEvents = [
     {
@@ -328,13 +330,14 @@ const UserPage = () => {
       {/* View Ticket Modal */}
       {showTicketModal && selectedEvent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-white rounded-lg p-6 max-w-xs w-full mx-4">
             {/* Close button */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xs font-semibold text-gray-900">Your Event Ticket</h2>
               <button
                 onClick={() => setShowTicketModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-xl font-bold"
+                className="text-gray-500 hover:text-gray-600 text-xl"
+                style={{ fontWeight: 100 }}
               >
                 ×
               </button>
@@ -349,11 +352,9 @@ const UserPage = () => {
             {/* QR Code */}
             <div className="flex justify-center mb-6">
               <div className="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center">
-                {/* QR Code placeholder - you can replace this with actual QR code library */}
-                <div className="w-40 h-40 bg-black" style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Crect x='0' y='0' width='10' height='10' fill='black'/%3E%3Crect x='20' y='0' width='10' height='10' fill='black'/%3E%3Crect x='40' y='0' width='10' height='10' fill='black'/%3E%3Crect x='60' y='0' width='10' height='10' fill='black'/%3E%3Crect x='80' y='0' width='10' height='10' fill='black'/%3E%3Crect x='0' y='20' width='10' height='10' fill='black'/%3E%3Crect x='80' y='20' width='10' height='10' fill='black'/%3E%3Crect x='0' y='40' width='10' height='10' fill='black'/%3E%3Crect x='20' y='40' width='10' height='10' fill='black'/%3E%3Crect x='40' y='40' width='10' height='10' fill='black'/%3E%3Crect x='60' y='40' width='10' height='10' fill='black'/%3E%3Crect x='80' y='40' width='10' height='10' fill='black'/%3E%3Crect x='0' y='60' width='10' height='10' fill='black'/%3E%3Crect x='80' y='60' width='10' height='10' fill='black'/%3E%3Crect x='0' y='80' width='10' height='10' fill='black'/%3E%3Crect x='20' y='80' width='10' height='10' fill='black'/%3E%3Crect x='40' y='80' width='10' height='10' fill='black'/%3E%3Crect x='60' y='80' width='10' height='10' fill='black'/%3E%3Crect x='80' y='80' width='10' height='10' fill='black'/%3E%3C/svg%3E")`,
-                  backgroundSize: 'cover'
-                }}>
+                {/* QR Code */}
+                <div className="w-40 h-40 bg-white flex items-center justify-center">
+                  <QRCodeSVG value={selectedEvent.title} size={160} />
                 </div>
               </div>
             </div>
@@ -364,9 +365,30 @@ const UserPage = () => {
             </p>
 
             {/* Add to Calendar Button */}
-            <button className="w-full bg-accent hover:opacity-90 text-white py-1 px-3 rounded-lg text-xs font-thin transition-colors mb-3">
-              📅 Add to Google Calendar
+            <button 
+              onClick={() => {
+                setShowNotification(true);
+                setTimeout(() => setShowNotification(false), 3000);
+              }}
+              className="w-full bg-accent hover:opacity-90 text-white py-1 px-3 rounded-lg text-xs font-thin transition-colors mb-3"
+            >
+              <FiCalendar className="inline-block w-4 h-3 mr-2" />
+              <span>Add to Google Calendar</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Success Notification */}
+      {showNotification && (
+        <div className="fixed bottom-8 right-8 z-50 animate-slide-up">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 flex items-center gap-3">
+            <div className="w-auto h-auto bg-black rounded-full flex items-center justify-center p-1">
+              <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <p className="text-2xs font-thin text-gray-900">Event added to Google Calendar!</p>
           </div>
         </div>
       )}

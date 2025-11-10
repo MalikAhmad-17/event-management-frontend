@@ -215,7 +215,7 @@ const BrowseEvents = () => {
                     <div className="mt-auto">
                       <button 
                         onClick={() => navigate(`/event/${event.id}`)}
-                        className="w-full bg-accent hover:opacity-90 text-white py-2 px-4 rounded text-sm font-medium transition-colors"
+                        className="w-full bg-accent hover:opacity-90 text-white py-1 px-4 rounded text-xs font-thin transition-colors"
                       >
                         View Details
                       </button>
