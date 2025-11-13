@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    /* Set default font family */
+    html {
+        font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    }
+
+    /* Body text styling */
+    body {
+        @apply text-sm leading-relaxed text-gray-800;
+        font-weight: 400;
+    }
+
+    /* Heading styles - large, bold, high readability */
+    h1 {
+        @apply text-3xl md:text-4xl font-bold leading-tight text-gray-900 mb-6;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h2 {
+        @apply text-2xl md:text-3xl font-bold leading-tight text-gray-900 mb-5;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h3 {
+        @apply text-xl md:text-2xl font-semibold leading-snug text-gray-900 mb-4;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h4 {
+        @apply text-lg md:text-xl font-semibold leading-snug text-gray-900 mb-3;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h5 {
+        @apply text-base md:text-lg font-medium leading-normal text-gray-900 mb-3;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h6 {
+        @apply text-sm md:text-base font-medium leading-normal text-gray-900 mb-2;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Paragraph and body text */
+    p {
+        @apply text-sm leading-relaxed text-gray-700 mb-4;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Responsive text sizing for better mobile experience */
+    @media (max-width: 640px) {
+        h1 {
+            @apply text-2xl;
+        }
+
+        h2 {
+            @apply text-xl;
+        }
+
+        h3 {
+            @apply text-lg;
+        }
+
+        body,
+        p {
+            @apply text-xs leading-relaxed;
+        }
+    }
+}
+
+/* Notif
+ication Animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
