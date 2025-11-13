@@ -87,7 +87,7 @@ const AdminDashboard = () => {
             </div>
             <div>
               <div className="text-gray-500 text-xs font-thin">Total Revenue</div>
-              <div className="text-gray-900 text-2xl font-thin">₹245K</div>
+              <div className="text-gray-900 text-2xl font-thin">$245K</div>
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ const AdminDashboard = () => {
                     }}
                   >
                     <div className="text-sm font-medium text-gray-900">{hoveredPoint.month}</div>
-                    <div className="text-sm text-green-600">revenue: ₹{hoveredPoint.value.toLocaleString()}</div>
+                    <div className="text-sm text-green-600">revenue: ${hoveredPoint.value.toLocaleString()}</div>
                   </div>
                 )}
               </div>
@@ -349,7 +349,7 @@ const AdminDashboard = () => {
             <div className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg">
               <div>
                 <div className="text-sm font-thin text-gray-900 mb-1">Payment processed</div>
-                <div className="text-xs text-gray-500">₹99.00</div>
+                <div className="text-xs text-gray-500">$99.00</div>
               </div>
               <div className="text-xs text-gray-500">2 hours ago</div>
             </div>

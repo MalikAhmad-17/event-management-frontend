@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
 
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [showNotification, setShowNotification] = useState(false);
 
   // Event data - in a real app this would come from an API
   const eventData = {
     1: {
       title: 'Tech Innovation Summit 2025',
       category: 'Technology',
-      price: '₹99',
+      price: '$99',
       date: 'November 15, 2025 at 09:00 AM',
       location: 'San Francisco Convention Center, CA',
       organizer: 'Tech Events Inc.',
@@ -36,7 +35,7 @@ const EventDetails = () => {
     3: {
       title: 'Music Festival 2025',
       category: 'Music',
-      price: '₹75',
+      price: '$75',
       date: 'December 5, 2025 at 06:00 PM',
       location: 'Central Park, New York',
       organizer: 'NYC Music Events',
@@ -154,13 +153,7 @@ const EventDetails = () => {
               </div>
 
               {/* Register Button */}
-              <button 
-                onClick={() => {
-                  setShowNotification(true);
-                  setTimeout(() => setShowNotification(false), 3000);
-                }}
-                className="w-full bg-accent hover:opacity-90 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4"
-              >
+              <button className="w-full bg-accent hover:opacity-90 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4">
                 Register Now
               </button>
 
@@ -172,24 +165,6 @@ const EventDetails = () => {
           </div>
         </div>
       </div>
-
-      {/* Success Notification */}
-      {showNotification && (
-        <div className="fixed bottom-8 right-8 z-50 animate-slide-up">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-4 flex items-center gap-3 min-w-[300px]">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Successfully registered for event!</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

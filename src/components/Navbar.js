@@ -6,10 +6,10 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-primary py-4 font-poppins z-50 shadow-md">
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link to="/user" className="flex items-center text-text-light font-normal text-xl">
+        <div className="flex items-center text-text-light font-normal text-xl">
           <Icon />
           <span className="ml-2">EventHub</span>
-        </Link>
+        </div>
         <div className="flex items-center space-x-4">
           <Link to="/browse" className="text-text-light hover:text-accent px-3 py-2 rounded-md text-xs font-medium">Browse Events</Link>
           <div className="flex items-center text-white px-3 py-1 rounded-md text-2xs border border-white hover:bg-white hover:text-text-dark">
