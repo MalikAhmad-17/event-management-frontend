@@ -12,7 +12,7 @@ function App() {
       <div className="min-h-screen">
         <Navbar />
         <Routes>
-          <Route path="/" element={<AdminDashboard />} />
+          <Route path="/" element={<UserPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user" element={<UserPage />} />
           <Route path="/browse" element={<BrowseEvents />} />
