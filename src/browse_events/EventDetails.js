@@ -11,7 +11,7 @@ const EventDetails = () => {
     1: {
       title: 'Tech Innovation Summit 2025',
       category: 'Technology',
-      price: '$99',
+      price: '₹99',
       date: 'November 15, 2025 at 09:00 AM',
       location: 'San Francisco Convention Center, CA',
       organizer: 'Tech Events Inc.',
@@ -35,7 +35,7 @@ const EventDetails = () => {
     3: {
       title: 'Music Festival 2025',
       category: 'Music',
-      price: '$75',
+      price: '₹75',
       date: 'December 5, 2025 at 06:00 PM',
       location: 'Central Park, New York',
       organizer: 'NYC Music Events',
@@ -43,6 +43,54 @@ const EventDetails = () => {
       total: '5000',
       image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&h=400&fit=crop',
       description: 'Experience an unforgettable night of music with top artists from around the world. Food, drinks, and amazing performances await you.'
+    },
+    4: {
+      title: 'Art & Design Fair',
+      category: 'Art',
+      price: '₹20',
+      date: 'December 12, 2025 at 11:00 AM',
+      location: 'Metropolitan Pavilion, New York',
+      organizer: 'Art & Design Collective',
+      registered: '1500',
+      total: '2000',
+      image: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=1200&h=400&fit=crop',
+      description: 'Discover stunning artworks and innovative designs from talented artists and designers. A perfect blend of creativity and inspiration awaits you at this premier art fair.'
+    },
+    5: {
+      title: 'Food & Wine Festival',
+      category: 'Food',
+      price: '₹120',
+      date: 'December 18, 2025 at 01:00 PM',
+      location: 'Napa Valley, CA',
+      organizer: 'Culinary Events Group',
+      registered: '800',
+      total: '1000',
+      image: 'https://picsum.photos/1200/400?random=5',
+      description: 'Indulge in exquisite culinary delights and fine wines from renowned chefs and wineries. Experience the perfect pairing of food and wine in the beautiful Napa Valley.'
+    },
+    6: {
+      title: 'Health & Wellness Expo',
+      category: 'Health',
+      price: 'Free',
+      date: 'January 10, 2026 at 10:00 AM',
+      location: 'Los Angeles Convention Center, CA',
+      organizer: 'Wellness Alliance',
+      registered: '2500',
+      total: '3000',
+      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&h=400&fit=crop',
+      description: 'Explore the latest in health and wellness with expert speakers, fitness demonstrations, and wellness products. Transform your lifestyle with insights from health professionals.'
+    },
+    7: {
+      title: 'Science & Technology Conference',
+      category: 'Science',
+      price: '₹150',
+      date: 'January 22, 2026 at 09:00 AM',
+      location: 'MIT, Cambridge, MA',
+      organizer: 'Scientific Research Institute',
+      registered: '600',
+      total: '700',
+      image: 'https://picsum.photos/1200/400?random=7',
+      description: 'Join leading scientists and researchers to explore groundbreaking discoveries and innovations in science and technology. Network with experts and gain insights into the future of scientific research.'
     }
   };
 
