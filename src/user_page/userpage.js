@@ -1,375 +1,235 @@
-import React, { useState } from 'react';
-import { FiCalendar, FiMapPin, FiClock, FiUsers } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import { FiCalendar, FiMapPin, FiClock, FiUsers } from "react-icons/fi";
 
 const UserPage = () => {
-  const [activeTab, setActiveTab] = useState('upcoming');
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showTicketModal, setShowTicketModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [ticketEvent, setTicketEvent] = useState(null);
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: 'Tech Innovation Summit 2025',
-      category: 'Technology',
-      price: '₹99',
-      date: 'November 15, 2025 at 09:00 AM',
-      location: 'San Francisco Convention Center, CA',
-      attendees: '1.2k attendees',
-      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=200&fit=crop'
-    },
-    {
-      id: 2,
-      title: 'Digital Marketing Masterclass',
-      category: 'Marketing',
-      price: 'Free',
-      date: 'November 20, 2025 at 02:00 PM',
-      location: 'Online Event',
-      attendees: '856 attendees',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=200&fit=crop'
-    },
-    {
-      id: 3,
-      title: 'Music Festival 2025',
-      category: 'Music',
-      price: '₹75',
-      date: 'December 5, 2025 at 06:00 PM',
-      location: 'Central Park, New York',
-      attendees: '4.5k attendees',
-      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop'
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+
+  // Profile fields
+  const [fullname, setFullname] = useState(user?.fullname || "");
+  const [password, setPassword] = useState("");
+
+  // Fetch all events + booking status
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/my-events/${userId}`);
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, [userId]);
+
+  // BOOK EVENT
+  const handleBookEvent = async (eventId) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/book-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, event_id: eventId }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+
+      if (data.success) {
+        window.location.reload();
+      }
+    } catch (err) {
+      console.log(err);
     }
-  ];
+  };
 
-  const pastEvents = [
-    {
-      id: 4,
-      title: 'Web Development Workshop',
-      category: 'Technology',
-      price: '₹45',
-      date: 'October 15, 2025 at 10:00 AM',
-      location: 'Tech Hub, Seattle',
-      attendees: '320 attendees',
-      image: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&h=200&fit=crop'
-    },
-    {
-      id: 5,
-      title: 'Business Networking Event',
-      category: 'Business',
-      price: '₹25',
-      date: 'September 28, 2025 at 07:00 PM',
-      location: 'Downtown Conference Center',
-      attendees: '180 attendees',
-      image: 'https://picsum.photos/400/200?random=5'
+  // UPDATE PROFILE
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/update-profile/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullname,
+          password: password.trim() === "" ? null : password,
+        }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+
+      if (data.success) {
+        // Update localStorage
+        const updatedUser = { ...user, fullname };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    } catch (err) {
+      console.log(err);
     }
-  ];
+  };
 
-  const currentEvents = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
-      {/* Header */}
+
+      {/* HEADER */}
       <div className="bg-primary shadow-sm border-b">
         <div className="container mx-auto px-6 py-8">
           <h1 className="text-xs font-medium text-white mb-1">My Dashboard</h1>
-          <p className="text-xs font-medium text-white mb-1">Welcome back,jenish112005</p>
+          <p className="text-xs font-medium text-white mb-1">Welcome back, {user.fullname}</p>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <div className="container mx-auto px-6 py-6">
-        <div className="flex space-x-1 bg-white rounded-3xl p-1 shadow-sm border border-gray-200 w-fit">
+
+        {/* TOP TABS */}
+        <div className="flex space-x-1 bg-white rounded-3xl p-1 shadow-sm border w-fit">
           <button
-            onClick={() => setActiveTab('upcoming')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  activeTab === 'upcoming'
-                    ? 'bg-gray-300 text-black'
-                    : 'bg-white text-black'
-                }`}
-          >
-            <FiCalendar className="inline-block w-3 h-3 mr-2" />
-            
-            My Registrations
+            onClick={() => setActiveTab("upcoming")}
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              activeTab === "upcoming" ? "bg-gray-300" : "bg-white"
+            }`}>
+            <FiCalendar className="inline-block w-3 h-3 mr-2" /> My Registrations
           </button>
+
           <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              activeTab === 'settings'
-                ? 'bg-gray-300 text-black'
-                : 'bg-white text-black'
-            }`}
-          >
-            <FiUsers className="inline-block w-3 h-3 mr-2" />
-            Profile Settings
+            onClick={() => setActiveTab("settings")}
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              activeTab === "settings" ? "bg-gray-300" : "bg-white"
+            }`}>
+            <FiUsers className="inline-block w-3 h-3 mr-2" /> Profile Settings
           </button>
         </div>
 
-        {/* Profile Settings Form */}
-        {activeTab === 'settings' && (
-          <div className="max-w-2xl mt-8">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-              <h2 className="text-xs font-extralight text-gray-900 mb-6" style={{ fontSize: '13px' }}>Profile Settings</h2>
-              
-              <form>
-                {/* Full Name */}
-                <div className="mb-3">
-                  <label htmlFor="fullName" className="block text-xs font-medium text-black-700 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    className="w-full px-4 py-2 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs"
-                  />
-                </div>
+        {/* -------------------- PROFILE SETTINGS -------------------- */}
+        {activeTab === "settings" && (
+          <div className="max-w-lg mt-8 bg-white p-6 shadow rounded-lg border">
 
-                {/* Email */}
-                <div className="mb-3">
-                  <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-2 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs"
-                  />
-                </div>
+            <h2 className="text-sm font-semibold mb-4">Update Profile</h2>
 
-                {/* Phone Number */}
-                <div className="mb-3">
-                  <label htmlFor="phone" className="block text-xs font-medium text-gray-700 mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full px-4 py-2 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs placeholder:text-gray-500"
-                  />
-                </div>
+            <form onSubmit={handleUpdateProfile}>
 
-                {/* New Password */}
-                <div className="mb-6">
-                  <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-2">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Leave blank to keep current"
-                    className="w-full px-4 py-2 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-xs text-xs placeholder:text-gray-500"
-                  />
-                </div>
+              {/* FULL NAME */}
+              <label className="text-xs font-medium">Full Name</label>
+              <input
+                type="text"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                className="w-full bg-gray-100 p-2 text-xs rounded mb-4"
+              />
 
-                {/* Update Button */}
-                <div className="pt-0 -mt-2">
-                  <button
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                    style={{ fontSize: '0.65rem' }}
-                  >
-                    Update Profile
-                  </button>
-                </div>
-              </form>
-            </div>
+              {/* EMAIL (READ ONLY) */}
+              <label className="text-xs font-medium">Email</label>
+              <input
+                type="email"
+                value={user.email}
+                readOnly
+                className="w-full bg-gray-200 p-2 text-xs rounded mb-4 text-gray-500"
+              />
+
+              {/* PASSWORD */}
+              <label className="text-xs font-medium">New Password</label>
+              <input
+                type="password"
+                placeholder="Please enter new passsword or enter same password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-gray-100 p-2 text-xs rounded mb-4"
+              />
+
+              <button className="bg-green-600 text-white w-full py-2 rounded text-xs">
+                Update Profile
+              </button>
+            </form>
           </div>
         )}
 
-        {/* Event Type Tabs - Only show when not in settings */}
-        {activeTab !== 'settings' && (
-          <div className="mt-8 mb-6">
-            <div className="flex space-x-1 bg-white rounded-3xl p-1 shadow-sm border border-gray-200 w-fit">
-              <button
-                onClick={() => setActiveTab('upcoming')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  activeTab === 'upcoming'
-                    ? 'bg-gray-300 text-black'
-                    : 'bg-white text-black'
-                }`}
-              >
-                Upcoming Events
-              </button>
-              <button
-                onClick={() => setActiveTab('past')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  activeTab === 'past'
-                    ? 'bg-gray-300 text-black'
-                    : 'bg-white text-black'
-                }`}
-              >
-                Past Events
-              </button>
-            </div>
-          </div>
-        )}
+        {/* -------------------- EVENT LIST -------------------- */}
+        {activeTab !== "settings" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
 
-        {/* Event Cards Grid - Only show when not in settings */}
-        {activeTab !== 'settings' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentEvents.map((event) => (
-            <div key={event.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-              {/* Event Image with Price Badge */}
-              <div className="relative h-48 overflow-hidden">
-                <img 
-                  src={event.image} 
-                  alt={event.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-1 left-2">
-                  <span className="bg-primary text-white px-2 py-0.5 rounded-md text-xs font-medium" style={{ fontSize: '0.6rem' }}>
+            {events.map((event) => (
+              <div key={event.id} className="bg-white shadow-sm border rounded-xl overflow-hidden">
+
+                {/* IMAGE */}
+                <div className="relative h-48">
+                  <img src={event.image} className="w-full h-full object-cover" />
+                  <div className="absolute top-2 left-2 bg-primary text-white px-2 py-1 text-xs rounded">
                     {event.price}
-                  </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Event Details */}
-              <div className="p-4 ">
-                <div className="mb-1">
-                  <span className="inline-block border border-gray-300 text-gray-700 px-1 py-0.5 rounded-md text-xs font-medium" style={{ fontSize: '0.6rem' }}>
+                {/* DETAILS */}
+                <div className="p-4 text-xs">
+                  <span className="border px-2 py-1 rounded text-[10px] text-gray-700">
                     {event.category}
                   </span>
-                </div>
-                
-                <h3 className="text-xs font-medium text-gray-900 mb-3">
-                  {event.title}
-                </h3>
 
-                <div className="space-y-2 text-xs text-gray-500" style={{ fontSize: '0.70rem' }}>
-                  <div className="flex items-center">
-                    <FiClock className="w-3 h-3 mr-2 text-gray-500" />
-                    {event.date}
+                  <h3 className="text-sm font-semibold mt-2">{event.title}</h3>
+
+                  <div className="mt-3 space-y-2 text-gray-500">
+                    <div className="flex items-center"><FiClock className="mr-2" /> {event.date}</div>
+                    <div className="flex items-center"><FiMapPin className="mr-2" /> {event.location}</div>
+                    <div className="flex items-center"><FiUsers className="mr-2" /> {event.registered}/{event.total}</div>
                   </div>
-                  <div className="flex items-center">
-                    <FiMapPin className="w-4 h-3 mr-2 text-gray-500" />
-                    {event.location}
-                  </div>
-                  <div className="flex items-center">
-                    <FiUsers className="w-4 h-3 mr-2 text-gray-500" />
-                    {event.attendees}
+
+                  {/* BUTTONS */}
+                  <div className="mt-4 flex gap-3">
+                    {event.booked === 1 ? (
+                      <button
+                        onClick={() => setTicketEvent(event)}
+                        className="flex-1 bg-accent text-white py-1 rounded">
+                        View Ticket
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleBookEvent(event.id)}
+                        className="flex-1 bg-green-600 text-white py-1 rounded">
+                        Book Now
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <div className="flex gap-3">
-                    <button 
-                      onClick={() => {
-                        setSelectedEvent(event);
-                        setShowCancelModal(true);
-                      }}
-                      className="flex-1 bg-white hover:bg-accent hover:text-white text-gray-900 py-1 px-2 rounded-md font-medium transition-colors border border-gray-300" 
-                      style={{ fontSize: '0.70rem', lineHeight: '1rem' }}
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setSelectedEvent(event);
-                        setShowTicketModal(true);
-                      }}
-                      className="flex-1 bg-accent hover:opacity-90 text-white py-1 px-4 rounded-md text-xs font-medium transition-colors" 
-                      style={{ fontSize: '0.70rem', lineHeight: '1rem' }}
-                    >
-                      View Ticket
-                    </button>
-                  </div>
-                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-            {/* Empty State */}
-            {currentEvents.length === 0 && (
-              <div className="text-center py-12">
-                <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No {activeTab} events found
-                </h3>
-                <p className="text-gray-600">
-                  {activeTab === 'upcoming' 
-                    ? "You haven't registered for any upcoming events yet." 
-                    : "You don't have any past events."}
-                </p>
-              </div>
-            )}
           </div>
         )}
-      </div>
 
-      {/* Cancel Registration Modal */}
-      {showCancelModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 sm:max-w-lg w-full mx-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-2">Cancel Registration?</h2>
-            <p className="text-gray-500 text-xs mb-6">
-              Are you sure you want to cancel your registration for this event? This action cannot be undone.
-            </p>
-            
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowCancelModal(false)}
-                className="bg-white hover:bg-gray-50 text-gray-900 py-1.5 px-3 rounded-lg font-medium transition-colors border border-gray-300"
-                style={{ fontSize: '0.7rem' }}
-              >
-                No, keep it
-              </button>
-              <button
-                onClick={() => {
-                  // Handle cancellation logic here
-                  setShowCancelModal(false);
-                  // You can add actual cancellation logic here
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white py-1.5 px-3 rounded-lg font-medium transition-colors"
-                style={{ fontSize: '0.7rem' }}
-              >
-                Yes, cancel registration
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        {/* -------------------- TICKET MODAL -------------------- */}
+        {ticketEvent && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg w-96">
 
-      {/* View Ticket Modal */}
-      {showTicketModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            {/* Close button */}
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xs font-semibold text-gray-900">Your Event Ticket</h2>
-              <button
-                onClick={() => setShowTicketModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-xl font-bold"
-              >
-                ×
-              </button>
-            </div>
-            
-            {/* Event Details */}
-            <div className="text-center mb-6">
-              <h2 className="text-xs font-semibold text-gray-900 mb-2">{selectedEvent.title}</h2>
-              <p className="text-xs text-gray-600">{selectedEvent.date}</p>
-            </div>
+              <h2 className="text-lg font-bold mb-2">Event Ticket</h2>
+              <p className="text-sm">{ticketEvent.title}</p>
+              <p className="text-xs text-gray-600">{ticketEvent.date}</p>
 
-            {/* QR Code */}
-            <div className="flex justify-center mb-6">
-              <div className="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center">
-                {/* QR Code placeholder - you can replace this with actual QR code library */}
-                <div className="w-40 h-40 bg-black" style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Crect x='0' y='0' width='10' height='10' fill='black'/%3E%3Crect x='20' y='0' width='10' height='10' fill='black'/%3E%3Crect x='40' y='0' width='10' height='10' fill='black'/%3E%3Crect x='60' y='0' width='10' height='10' fill='black'/%3E%3Crect x='80' y='0' width='10' height='10' fill='black'/%3E%3Crect x='0' y='20' width='10' height='10' fill='black'/%3E%3Crect x='80' y='20' width='10' height='10' fill='black'/%3E%3Crect x='0' y='40' width='10' height='10' fill='black'/%3E%3Crect x='20' y='40' width='10' height='10' fill='black'/%3E%3Crect x='40' y='40' width='10' height='10' fill='black'/%3E%3Crect x='60' y='40' width='10' height='10' fill='black'/%3E%3Crect x='80' y='40' width='10' height='10' fill='black'/%3E%3Crect x='0' y='60' width='10' height='10' fill='black'/%3E%3Crect x='80' y='60' width='10' height='10' fill='black'/%3E%3Crect x='0' y='80' width='10' height='10' fill='black'/%3E%3Crect x='20' y='80' width='10' height='10' fill='black'/%3E%3Crect x='40' y='80' width='10' height='10' fill='black'/%3E%3Crect x='60' y='80' width='10' height='10' fill='black'/%3E%3Crect x='80' y='80' width='10' height='10' fill='black'/%3E%3C/svg%3E")`,
-                  backgroundSize: 'cover'
-                }}>
-                </div>
+              <div className="mt-4 text-center text-green-600 font-semibold">
+                ✔ BOOKED
               </div>
+
+              <button
+                onClick={() => setTicketEvent(null)}
+                className="mt-4 w-full bg-gray-200 py-2 rounded">
+                Close
+              </button>
             </div>
-
-            {/* Instructions */}
-            <p className="text-center text-xs text-gray-600 mb-6">
-              Show this QR code at the event entrance
-            </p>
-
-            {/* Add to Calendar Button */}
-            <button className="w-full bg-accent hover:opacity-90 text-white py-1 px-3 rounded-lg text-xs font-thin transition-colors mb-3">
-              📅 Add to Google Calendar
-            </button>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
     </div>
   );
 };

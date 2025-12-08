@@ -1,119 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
+
+const fixImageUrl = (url) => {
+  if (!url) return "https://via.placeholder.com/1200x400?text=No+Image";
+
+  if (url.includes("images.unsplash.com")) {
+    return url + "&w=1600&h=600&fit=crop";
+  }
+
+  if (url.includes("unsplash.com/photos")) {
+    const id = url.split("/").pop();
+    return `https://images.unsplash.com/photo-${id}?w=1600&h=600&fit=crop`;
+  }
+
+  return url;
+};
 
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Event data - in a real app this would come from an API
-  const eventData = {
-    1: {
-      title: 'Tech Innovation Summit 2025',
-      category: 'Technology',
-      price: '₹99',
-      date: 'November 15, 2025 at 09:00 AM',
-      location: 'San Francisco Convention Center, CA',
-      organizer: 'Tech Events Inc.',
-      registered: '387',
-      total: '500',
-      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=400&fit=crop',
-      description: 'Join us for the biggest tech innovation summit of the year. Network with industry leaders, explore cutting-edge technologies, and gain insights into the future of tech.'
-    },
-    2: {
-      title: 'Digital Marketing Masterclass',
-      category: 'Marketing',
-      price: 'Free',
-      date: 'November 20, 2025 at 02:00 PM',
-      location: 'Online Event',
-      organizer: 'Marketing Pro Academy',
-      registered: '756',
-      total: '1000',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=400&fit=crop',
-      description: 'Master the art of digital marketing with industry experts. Learn the latest strategies, tools, and techniques to grow your business online.'
-    },
-    3: {
-      title: 'Music Festival 2025',
-      category: 'Music',
-      price: '₹75',
-      date: 'December 5, 2025 at 06:00 PM',
-      location: 'Central Park, New York',
-      organizer: 'NYC Music Events',
-      registered: '4523',
-      total: '5000',
-      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&h=400&fit=crop',
-      description: 'Experience an unforgettable night of music with top artists from around the world. Food, drinks, and amazing performances await you.'
-    },
-    4: {
-      title: 'Art & Design Fair',
-      category: 'Art',
-      price: '₹20',
-      date: 'December 12, 2025 at 11:00 AM',
-      location: 'Metropolitan Pavilion, New York',
-      organizer: 'Art & Design Collective',
-      registered: '1500',
-      total: '2000',
-      image: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=1200&h=400&fit=crop',
-      description: 'Discover stunning artworks and innovative designs from talented artists and designers. A perfect blend of creativity and inspiration awaits you at this premier art fair.'
-    },
-    5: {
-      title: 'Food & Wine Festival',
-      category: 'Food',
-      price: '₹120',
-      date: 'December 18, 2025 at 01:00 PM',
-      location: 'Napa Valley, CA',
-      organizer: 'Culinary Events Group',
-      registered: '800',
-      total: '1000',
-      image: 'https://picsum.photos/1200/400?random=5',
-      description: 'Indulge in exquisite culinary delights and fine wines from renowned chefs and wineries. Experience the perfect pairing of food and wine in the beautiful Napa Valley.'
-    },
-    6: {
-      title: 'Health & Wellness Expo',
-      category: 'Health',
-      price: 'Free',
-      date: 'January 10, 2026 at 10:00 AM',
-      location: 'Los Angeles Convention Center, CA',
-      organizer: 'Wellness Alliance',
-      registered: '2500',
-      total: '3000',
-      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&h=400&fit=crop',
-      description: 'Explore the latest in health and wellness with expert speakers, fitness demonstrations, and wellness products. Transform your lifestyle with insights from health professionals.'
-    },
-    7: {
-      title: 'Science & Technology Conference',
-      category: 'Science',
-      price: '₹150',
-      date: 'January 22, 2026 at 09:00 AM',
-      location: 'MIT, Cambridge, MA',
-      organizer: 'Scientific Research Institute',
-      registered: '600',
-      total: '700',
-      image: 'https://picsum.photos/1200/400?random=7',
-      description: 'Join leading scientists and researchers to explore groundbreaking discoveries and innovations in science and technology. Network with experts and gain insights into the future of scientific research.'
-    }
-  };
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const event = eventData[id];
+  // 🚀 Fetch event using API
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/events/${id}`);
+        const data = await res.json();
 
-  if (!event) {
-    return <div>Event not found</div>;
-  }
+        setEvent(data);
+      } catch (err) {
+        console.error("API ERROR:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const registrationPercentage = (parseInt(event.registered) / parseInt(event.total)) * 100;
+    fetchEvent();
+  }, [id]);
+
+  if (loading)
+    return <div className="min-h-screen flex items-center justify-center text-lg">Loading event...</div>;
+
+  if (!event)
+    return <div className="min-h-screen flex items-center justify-center text-lg text-red-600">Event not found</div>;
+
+  const registered = parseInt(event.registered ?? 0);
+  const total = parseInt(event.total ?? 0);
+  const percentage = (registered / total) * 100;
+
+  const remaining = total - registered;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
+
       {/* Hero Section */}
       <div className="relative h-80 overflow-hidden">
-        <img 
-          src={event.image} 
+        <img
+          src={fixImageUrl(event.image)}
           alt={event.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        
-        {/* Back Button and Category */}
+
+        {/* Back Button + Category */}
         <div className="absolute top-6 left-6">
           <div className="flex items-center gap-3">
             <button
@@ -135,20 +88,26 @@ const EventDetails = () => {
         </div>
       </div>
 
-      {/* Content Section */}
+      {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+
+          {/* LEFT SIDE */}
           <div className="lg:col-span-2">
+            {/* About Section */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
               <h2 className="text-lg font-medium text-gray-900 mb-4">About This Event</h2>
               <p className="text-gray-500 text-xs leading-relaxed">
                 {event.description}
               </p>
             </div>
+
+            {/* Event Details */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Event Details</h3>
+
               <div className="space-y-4">
+
                 <div className="flex items-start">
                   <FiCalendar className="w-4 h-4 text-gray-400 mt-1 mr-3" />
                   <div>
@@ -172,45 +131,50 @@ const EventDetails = () => {
                     <div className="text-xs text-gray-900">{event.organizer}</div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* RIGHT SIDEBAR */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+
               {/* Price */}
               <div className="text-right mb-6">
                 <span className="text-xl font-medium text-gray-900">{event.price}</span>
               </div>
 
-              {/* Registration Progress */}
+              {/* Progress Bar */}
               <div className="mb-6">
                 <div className="flex justify-between text-xs text-gray-600 mb-2">
-                  <span>{event.registered}/{event.total}</span>
+                  <span>{registered}/{total}</span>
                 </div>
+
                 <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                  <div 
-                    className="bg-accent h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${registrationPercentage}%` }}
+                  <div
+                    className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${percentage}%` }}
                   ></div>
                 </div>
+
                 <div className="text-xs text-gray-500">
-                  {parseInt(event.total) - parseInt(event.registered)} spots remaining
+                  {remaining} spots remaining
                 </div>
               </div>
 
               {/* Register Button */}
-              <button className="w-full bg-accent hover:opacity-90 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4">
+              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4">
                 Register Now
               </button>
 
-              {/* Secure Payment */}
               <div className="text-center">
                 <p className="text-xs text-gray-500">Secure payment powered by Stripe</p>
               </div>
+
             </div>
           </div>
+
         </div>
       </div>
     </div>
