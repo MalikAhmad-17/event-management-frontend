@@ -70,7 +70,7 @@ const EventDetails = () => {
         <div className="absolute top-6 left-6">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/browse')}
+              onClick={() =>window.history.back()}
               className="flex items-center bg-black bg-opacity-60 text-white px-3 py-1 rounded text-sm hover:bg-opacity-80 transition-colors"
             >
               <FiArrowLeft className="w-4 h-4 mr-1" />
@@ -164,9 +164,9 @@ const EventDetails = () => {
               </div>
 
               {/* Register Button */}
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4">
+            {/*   <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-xs font-medium transition-colors mb-4">
                 Register Now
-              </button>
+              </button> */}
 
               <div className="text-center">
                 <p className="text-xs text-gray-500">Secure payment powered by Stripe</p>

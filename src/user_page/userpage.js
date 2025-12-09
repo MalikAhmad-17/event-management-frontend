@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiCalendar, FiMapPin, FiClock, FiUsers } from "react-icons/fi";
+import { QRCodeCanvas } from "qrcode.react";
+
 
 const UserPage = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -14,7 +16,7 @@ const UserPage = () => {
   const [fullname, setFullname] = useState(user?.fullname || "");
   const [password, setPassword] = useState("");
 
-  // Fetch all events + booking status
+  // Fetch events + booking status
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -42,9 +44,7 @@ const UserPage = () => {
       const data = await res.json();
       alert(data.message);
 
-      if (data.success) {
-        window.location.reload();
-      }
+      if (data.success) window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -68,7 +68,6 @@ const UserPage = () => {
       alert(data.message);
 
       if (data.success) {
-        // Update localStorage
         const updatedUser = { ...user, fullname };
         localStorage.setItem("user", JSON.stringify(updatedUser));
       }
@@ -86,40 +85,39 @@ const UserPage = () => {
       <div className="bg-primary shadow-sm border-b">
         <div className="container mx-auto px-6 py-8">
           <h1 className="text-xs font-medium text-white mb-1">My Dashboard</h1>
-          <p className="text-xs font-medium text-white mb-1">Welcome back, {user.fullname}</p>
+          <p className="text-xs font-medium text-white mb-1">
+            Welcome back, {user.fullname}
+          </p>
         </div>
       </div>
 
       <div className="container mx-auto px-6 py-6">
 
-        {/* TOP TABS */}
+        {/* TABS */}
         <div className="flex space-x-1 bg-white rounded-3xl p-1 shadow-sm border w-fit">
           <button
             onClick={() => setActiveTab("upcoming")}
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
-              activeTab === "upcoming" ? "bg-gray-300" : "bg-white"
-            }`}>
+            className={`px-3 py-1 rounded-full text-xs font-medium ${activeTab === "upcoming" ? "bg-gray-300" : "bg-white"
+              }`}
+          >
             <FiCalendar className="inline-block w-3 h-3 mr-2" /> My Registrations
           </button>
 
           <button
             onClick={() => setActiveTab("settings")}
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
-              activeTab === "settings" ? "bg-gray-300" : "bg-white"
-            }`}>
+            className={`px-3 py-1 rounded-full text-xs font-medium ${activeTab === "settings" ? "bg-gray-300" : "bg-white"
+              }`}
+          >
             <FiUsers className="inline-block w-3 h-3 mr-2" /> Profile Settings
           </button>
         </div>
 
-        {/* -------------------- PROFILE SETTINGS -------------------- */}
+        {/* PROFILE SETTINGS */}
         {activeTab === "settings" && (
           <div className="max-w-lg mt-8 bg-white p-6 shadow rounded-lg border">
-
             <h2 className="text-sm font-semibold mb-4">Update Profile</h2>
 
             <form onSubmit={handleUpdateProfile}>
-
-              {/* FULL NAME */}
               <label className="text-xs font-medium">Full Name</label>
               <input
                 type="text"
@@ -128,7 +126,6 @@ const UserPage = () => {
                 className="w-full bg-gray-100 p-2 text-xs rounded mb-4"
               />
 
-              {/* EMAIL (READ ONLY) */}
               <label className="text-xs font-medium">Email</label>
               <input
                 type="email"
@@ -137,11 +134,10 @@ const UserPage = () => {
                 className="w-full bg-gray-200 p-2 text-xs rounded mb-4 text-gray-500"
               />
 
-              {/* PASSWORD */}
               <label className="text-xs font-medium">New Password</label>
               <input
                 type="password"
-                placeholder="Please enter new passsword or enter same password"
+                placeholder="Enter new or same password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-gray-100 p-2 text-xs rounded mb-4"
@@ -154,14 +150,13 @@ const UserPage = () => {
           </div>
         )}
 
-        {/* -------------------- EVENT LIST -------------------- */}
+        {/* EVENT LIST */}
         {activeTab !== "settings" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
 
             {events.map((event) => (
               <div key={event.id} className="bg-white shadow-sm border rounded-xl overflow-hidden">
 
-                {/* IMAGE */}
                 <div className="relative h-48">
                   <img src={event.image} className="w-full h-full object-cover" />
                   <div className="absolute top-2 left-2 bg-primary text-white px-2 py-1 text-xs rounded">
@@ -207,17 +202,34 @@ const UserPage = () => {
           </div>
         )}
 
-        {/* -------------------- TICKET MODAL -------------------- */}
+        {/* TICKET MODAL WITH QR CODE */}
         {ticketEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg w-96">
 
               <h2 className="text-lg font-bold mb-2">Event Ticket</h2>
-              <p className="text-sm">{ticketEvent.title}</p>
-              <p className="text-xs text-gray-600">{ticketEvent.date}</p>
+
+              <p className="text-sm font-semibold">{ticketEvent.title}</p>
+              <p className="text-xs text-gray-600 mb-3">{ticketEvent.date}</p>
+
+              <div className="flex justify-center my-4">
+                <QRCodeCanvas
+                  value={JSON.stringify({
+                    eventId: ticketEvent.id,
+                    title: ticketEvent.title,
+                    date: ticketEvent.date,
+                    location: ticketEvent.location,
+                    user: user.fullname,
+                  })}
+                  size={180}
+                  level="H"
+                  includeMargin={true}
+                />
+
+              </div>
 
               <div className="mt-4 text-center text-green-600 font-semibold">
-                ✔ BOOKED
+                ✔ BOOKED — Scan this QR at Entry
               </div>
 
               <button
