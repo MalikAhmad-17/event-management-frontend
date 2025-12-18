@@ -60,7 +60,7 @@ const EventDetails = () => {
       {/* Hero Section */}
       <div className="relative h-80 overflow-hidden">
         <img
-          src={fixImageUrl(event.image)}
+          src={'http://localhost:5000'+event.image}
           alt={event.title}
           className="w-full h-full object-cover"
         />

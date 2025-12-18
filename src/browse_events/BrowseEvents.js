@@ -138,7 +138,7 @@ const BrowseEvents = () => {
                 filteredEvents.map((event) => (
                   <div key={event.id} className="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div className="relative h-48">
-                      <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+                      <img  src={'http://localhost:5000'+event.image} alt={event.title} className="w-full h-full object-cover" />
                       <div className="absolute top-1 left-2">
                         <span className="bg-primary text-white px-2 py-0.5 rounded text-xs">{event.price}</span>
                       </div>

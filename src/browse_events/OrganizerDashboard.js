@@ -9,7 +9,7 @@ const EventCard = ({ event, navigate }) => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="relative h-48 overflow-hidden">
         <img
-          src={event.image}
+          src={'http://localhost:5000'+event.image}
           alt={event.title}
           className="w-full h-full object-cover"
         />
@@ -58,9 +58,9 @@ const EventCard = ({ event, navigate }) => {
         </div>
 
         <div className="mt-3">
-          <button className="w-full bg-white border border-gray-200 text-gray-700 py-2 rounded-md">
+         {/*  <button className="w-full bg-white border border-gray-200 text-gray-700 py-2 rounded-md">
             Manage Event
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
@@ -133,9 +133,13 @@ export default function OrganizerDashboard() {
             >
               Create New Event
             </button>
-            <button className="ml-3 bg-white border border-gray-200 px-3 py-2 rounded-md">
-              View All
-            </button>
+           <button
+  className="ml-3 bg-white border border-gray-200 px-3 py-2 rounded-md"
+  onClick={() => navigate("/organizer/view-all")}
+>
+  View All
+</button>
+
           </div>
         </div>
 

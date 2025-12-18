@@ -7,6 +7,7 @@ import EventDetails from './browse_events/EventDetails';
 import LoginPage from './auth/LoginPage';
 import OrganizerDashboard from './browse_events/OrganizerDashboard';
 import CreateEventWizard from './browse_events/CreateEventWizard';
+import ViewAllEvents from './browse_events/ViewAllEvents';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/event/:id" element={<EventDetails />} />
           <Route path="/organizer-dashboard" element={<OrganizerDashboard />} />
           <Route path="/organizer/create-event" element={<CreateEventWizard />} />
+          <Route path="/organizer/view-all" element={<ViewAllEvents />} />
         </Routes>
       </div>
     </Router>

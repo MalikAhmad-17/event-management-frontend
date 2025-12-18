@@ -455,34 +455,66 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activity Section */}
-      <div className="container mx-auto px-6 py-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 className="text-sm font-thin text-gray-900 mb-6">Recent Activity</h1>
+    {/* Recent Activity Section */}
+<div className="container mx-auto px-6 py-6">
+  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <h1 className="text-sm font-medium text-gray-900 mb-6">
+      Recent Activity
+    </h1>
 
-          {activity.length === 0 ? (
-            <div className="text-xs text-gray-500">No recent activity found.</div>
-          ) : (
-            <div className="space-y-3">
-              {activity.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-start py-4 px-4 bg-gray-100 rounded-lg"
-                >
-                  <div>
-                    <div className="text-sm font-thin text-gray-900 mb-1">
-                      {item.activity}
-                    </div>
-                    <div className="text-xs text-gray-500">{item.info}</div>
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {formatTimeAgo(item.created_at)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+    {activity.length === 0 ? (
+      <div className="text-xs text-gray-500">
+        No recent activity found.
       </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {activity.map((item, index) => (
+          <div
+            key={index}
+            className="bg-gray-50 border border-gray-200 rounded-lg p-4"
+          >
+            {/* Activity Type */}
+            <div className="text-xs text-indigo-600 font-medium mb-1">
+              {item.activity_type}
+            </div>
+
+            {/* Title */}
+            <div className="text-sm font-semibold text-gray-900 mb-2">
+              {item.title}
+            </div>
+
+            {/* Details */}
+            <div className="text-xs text-gray-600 space-y-1">
+              {item.total_capacity !== null && (
+                <div>
+                  Capacity:{" "}
+                  <span className="font-medium">
+                    {item.total_capacity}
+                  </span>
+                </div>
+              )}
+
+              {item.registered !== null && (
+                <div>
+                  Booked:{" "}
+                  <span className="font-medium">
+                    {item.registered}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Time */}
+            <div className="mt-3 text-[11px] text-gray-400">
+              {formatTimeAgo(item.created_at)}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };
